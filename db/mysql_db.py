@@ -4,39 +4,26 @@
 # @Date:   2019-01-23 11:26:50
 
 
-import pymysql
-import threading
-from pypika import Query, Table, Field
-
 from util.singleton import SingletonMixin
-from config import mysql as cfg
+from .mysql.sql_sup import SqlRes
+from .mysql.sql_builder import SqlBuilder
+from .mysql.mysql_pool import MysqlPool
 
-class MysqlPool(SingletonMixin):
-    def __init__(self, host=cfg.host, username=cfg.usr, pwd=cfg.pwd, dbname=cfg.db):
-        self.pool = {}
-        self.host = host
-        self.username = username
-        self.pwd = pwd
-        self.dbname = dbname
-
-    def get_instance(self):
-        name = threading.current_thread().name
-        if name not in self.pool:
-            conn = pymysql.connect(self.host, self.username, self.pwd, self.dbname)
-            self.pool[name] = conn
-        return self.pool[name]
-
-class MysqlClient(object):
+class MysqlClient(SingletonMixin):
     __pool = MysqlPool.instance()
 
-    def select(self):
+    def s(self):
+        return self.__pool.get_instance()
+
+    def do(self, sql):
         db = self.__pool.get_instance()
         cursor = db.cursor()
+        # sql_str = sql
+        sql_str = sql.replace('"', '`')
         try:
-            res = cursor.execute(sql)
+            cursor.execute(sql_str)
             db.commit()
-            return True, res
-        except e:
+            return True, SqlRes(cursor, db)
+        except Exception as e:
             db.rollback()
             return False, e
-        

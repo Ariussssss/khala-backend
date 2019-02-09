@@ -7,6 +7,7 @@
 import base64
 import json
 from Crypto.Cipher import AES
+import hashlib
 
 def add_to_16(value):
     while len(value) % 16 != 0:
@@ -31,3 +32,12 @@ def aiur_decode(key, text):
         return True, json.loads(decrypted_text)
     except Exception as e:
         return False, e
+
+def sha1(text):
+    hash = hashlib.sha1()
+    hash.update(str(text).encode('utf-8'))
+    return hash.hexdigest()
+
+if __name__ == '__main__':
+    print(sha1('111'))
+    print(sha1('222'))

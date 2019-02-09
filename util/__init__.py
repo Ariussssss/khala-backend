@@ -3,6 +3,8 @@
 # @Email: arius@qq.com
 # @Date:   2019-01-23 16:05:04
 
+from random import randint
+
 from .singleton import SingletonMixin
 
 def name_log(f):
@@ -11,6 +13,9 @@ def name_log(f):
         return f(self, *args, **kwargs)
     return wrap
 
+def rd_int_str(num=8):
+    return [randint(0, 9) for p in range(0, 10)]
+
 class Obj(object):
     def __init__(self, d):
         for a, b in d.items():
@@ -18,3 +23,4 @@ class Obj(object):
                setattr(self, a, [Obj(x) if isinstance(x, dict) else x for x in b])
             else:
                setattr(self, a, Obj(b) if isinstance(b, dict) else b)
+

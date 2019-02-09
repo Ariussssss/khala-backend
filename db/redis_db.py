@@ -8,6 +8,7 @@ import redis
 
 from util.singleton import SingletonMixin
 from config import redis as cfg
+from .redis.key_builder import KeyBuilder
 
 class RedisClient(SingletonMixin):
     def __init__(self, host = cfg.host, port = cfg.port, db = cfg.db):
@@ -15,11 +16,9 @@ class RedisClient(SingletonMixin):
 
     def get_client(self):
         return redis.Redis(connection_pool=self.pool)
-
-def create_redis_key(arr):
-    return '.'.join([str(x) for x in arr])
         
 def getRedisClient():
     return RedisClient.instance().get_client()
 
-    
+if __name__ == '__main__':
+    print(getRedisClient().spop(KeyBuilder.unrecv(1)))
