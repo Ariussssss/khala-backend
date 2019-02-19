@@ -33,7 +33,7 @@ class LoginHandler(BaseHandler):
                 }
             else:
                 return cfg.svr.code, {
-                    'err': res,
+                    'err': str(res),
                 }
         else:
             return cfg.na.code, {

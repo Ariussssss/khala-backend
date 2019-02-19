@@ -37,7 +37,7 @@ class BaseHandler(web.RequestHandler):
                 code, res = f(self, *args, **kwargs)
             except Exception as e:
                 print(e)
-                code, msg = getattr(e, 'status_code', 400),\
+                code, msg = getattr(e, 'status_code', code_cfg.mis),\
                     getattr(e, 'log_message', 'Not Found')
                 res = {
                     'err': msg
@@ -62,8 +62,6 @@ class BaseHandler(web.RequestHandler):
     def verify_token(self):
         token = self.request.headers.get('KL-Auth')
         cookie = self.get_cookie('klauth')
-        print('klauth:')
-        print(self.request.headers)
         status, usr = vt(token)
         if status:
             self._usr = usr
@@ -73,7 +71,7 @@ class BaseHandler(web.RequestHandler):
     def res_error(self, e=None):
         code, msg = getattr(e, 'status_code', 500),\
             getattr(e, 'log_message', 'Not Found')
-        self._finish(400, {
+        self._finish(code_cfg.mis, {
             'err': msg,
         })    
 

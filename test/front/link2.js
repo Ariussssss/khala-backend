@@ -2,7 +2,7 @@
 * @Author: Arius
 * @Date:   2019-02-07 19:08:53
 * @Last Modified by:   Arius
-* @Last Modified time: 2019-02-09 16:19:00
+* @Last Modified time: 2019-02-19 20:24:08
 */
 
 const WebSocket = require('ws');
@@ -14,7 +14,7 @@ const ws = new WebSocket(
     {
         'headers': {
             // ekolia
-            'Cookie': cookie.serialize('kl-auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50Ijp7ImlkIjoxMDAwNCwibmFtZSI6ImVrb2xpYSJ9LCJpYXQiOjE1NDk3MDAyOTksImV4cCI6MTU1MDMwNTA5OSwic2lnIjoiK3Q5ZzJvcW9YMWdYVEdNWFhvWlNlQzk5czgyMWlaWmJQNzJwZUhEMnViOGhMTDAvb2R3aGdqTVpVakZXRHZjcFhlWDJoTVNSOTJyZ1xuL25RREQ4QXZ4QT09XG4ifQ.CjPNBHxQEOfgSB6ljmf4XxQesE5Jf8bx6oaqmqBdj7k')
+            'Cookie': cookie.serialize('kl-auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50Ijp7ImlkIjoxLCJuYW1lIjoiZWtvbGlhIn0sImlhdCI6MTU1MDU3MDI5MCwiZXhwIjoxNTUxMTc1MDkwLCJzaWciOiI0dGx6anc3NzlMWUV3NnFVbm0yNzk2NytsQTBFUmZ4YjM1blNUUTlGZ2FjdVE4R29UK253Y0tndUhKZ2U4QzJGc3lEWDBJTG0vemhQXG5zR2hCS2RJRmxBPT1cbiJ9.12oq4xbmW2dNOhv9a7poCZ2VoZb-BYxs3ONa3pzCx8A')
         }
     }
 );

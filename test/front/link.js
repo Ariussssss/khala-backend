@@ -2,7 +2,7 @@
 * @Author: Arius
 * @Date:   2019-02-07 19:08:53
 * @Last Modified by:   Arius
-* @Last Modified time: 2019-02-09 17:29:01
+* @Last Modified time: 2019-02-19 20:24:24
 */
 
 const WebSocket = require('ws');
@@ -13,16 +13,16 @@ const ws = new WebSocket(
     [],
     {
         'headers': {
-            // arius
-            'Cookie': cookie.serialize('kl-auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50Ijp7ImlkIjoxMDAwMywibmFtZSI6ImFyaXVzIn0sImlhdCI6MTU0OTUzOTU1NSwiZXhwIjoxNTUwMTQ0MzU1LCJzaWciOiJFV1ljS2VKMkQ4RUtUN1hkdnVyNHlTRTNUQ1h0RWo4RUx5ZlorcEc4VklxTXd4TkNPNjRVUTRMN2RDdWNqZ2lQdjJGY3h1alNBOXRPXG5xM1BNZ2hNNmxnPT1cbiJ9.R8Ah7Qyfdlh3JljvaQCuthL-xqTPOWEjOdDGNwRbdmY')
+            // ivy
+            'Cookie': cookie.serialize('kl-auth', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50Ijp7ImlkIjo0LCJuYW1lIjoiaXZ5In0sImlhdCI6MTU1MDU3ODk4MiwiZXhwIjoxNTUxMTgzNzgyLCJzaWciOiJmRkJueE04QWxUdHVzaVVSaDlWODB3ckdwdjJyT0lvcEJQSGRSQWNzcDNMQk1QQnFHOWNVcDc5clZsSkt2dW5YNmdQRUFiRisydURHXG5aazJpK2gvNmlBPT1cbiJ9.3pVfbBWftfwuDFzL2YN9-m-je42LAKHa7ebzZOwmwuw')
         }
     }
 );
  
 ws.on('open', function open() {
   ws.send(JSON.stringify({
-    to: 10004,
-    send: 0,
+    to: 2,
+    send: 1,
     type: 0,
     msg: 'hello',
     date: new Date().valueOf(),
