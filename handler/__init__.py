@@ -18,12 +18,13 @@ from config import (
 from auth import verify_token as vt
 from .connect_center import CnCenter
 
-def create_msg(fro, typ, msg, dat):
+def create_msg(from_, typ, msg, date, group):
     return {
-        'from': fro,
+        'from': from_,
         'type': typ,
         'msg': msg,
-        'date': dat,
+        'date': date,
+        'group': group,
     }
 
 
@@ -32,6 +33,7 @@ class BaseHandler(web.RequestHandler):
     def _res_fmt(f):
         def wrap(self, *args, **kwargs):
             self.verify_token()
+            print()
             print(self._usr)
             try:
                 code, res = f(self, *args, **kwargs)
@@ -55,6 +57,7 @@ class BaseHandler(web.RequestHandler):
     def _finish(self, code=500, res={}):
         res = res.copy()
         res['code'] = code
+        print(code, res)
         self.clear()
         self.set_status(code)
         self.finish(res)
@@ -92,6 +95,10 @@ class SocketHandler(websocket.WebSocketHandler):
 
     def open(self):
         token = self.get_cookie('kl-auth')
+        print ()
+        # print(dir(self))
+        print(self._headers)
+        print (token)
         status, usr = vt(token)
         if status:
             self._usr = usr
@@ -99,19 +106,23 @@ class SocketHandler(websocket.WebSocketHandler):
             self.beforeLogin()
             print('{0}\n{1} join'.format(
                 datetime.now(), usr['name']))
-            print(CnCenter.instance().all_members)
+            print('allMember:', CnCenter.instance().all_members)
         else:
             self._usr = None
             self.close()
             print('{0}\n failed join'.format(
                 datetime.now()))
 
+    def beforeLogout(self):
+        pass
+
     def on_close(self):
         print('{0}\n{1} leave'.format(
             datetime.now(), self._usr['name']))
+        self.beforeLogout()
         CnCenter.instance().remove(self._usr['id'])
         self._usr = None
-        print(CnCenter.instance().all_members)
+        print('allMember:', CnCenter.instance().all_members)
 
     def on_message(self, msg_info):
         pass

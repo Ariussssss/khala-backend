@@ -24,3 +24,8 @@ class Obj(object):
             else:
                setattr(self, a, Obj(b) if isinstance(b, dict) else b)
 
+def random_str(length):
+    random_str_base='1234567890qwertyuiopasdfghjklzxcvbnm'
+    random_str_base_length = len(random_str_base) - 1
+    return ''.join([random_str_base[randint(0, random_str_base_length)]
+        for x in range(0, length)])

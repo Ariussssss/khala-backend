@@ -8,7 +8,6 @@ from util.singleton import SingletonMixin
 class CnCenter(SingletonMixin):
     def __init__(self):
         self._onLine = {}
-        self._chat = {}
 
     @property
     def all_connection(self):

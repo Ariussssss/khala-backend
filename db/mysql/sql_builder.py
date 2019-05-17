@@ -6,6 +6,7 @@
 from pypika import (
     Query,
     Table,
+    Tables,
     Field,
     Order,
     functions as fn,
@@ -47,6 +48,26 @@ class SqlBuilder(object):
         return q
 
     @sql_fmt
+    def get_usr(id):
+        usr = Table(cfg.usr)
+        q = Query.from_(usr).select(
+            usr.id, usr.name
+        ).where(
+            usr.id == id
+        )
+        return q
+
+    @sql_fmt
+    def check_exist_by_name(name):
+        usr = Table(cfg.usr)
+        q = Query.from_(usr).select(
+            fn.Count(usr.id)
+        ).where(
+            usr.name == name
+        )
+        return q
+
+    @sql_fmt
     def check_exist(id):
         usr = Table(cfg.usr)
         q = Query.from_(usr).select(
@@ -72,13 +93,13 @@ class SqlBuilder(object):
         return q
 
     @sql_fmt
-    def create_room(owner):
+    def create_room(name, owner):
         room = Table(cfg.room)
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         q = Query.into(room).columns(
-                room.owner, room.updated, room.created
+                room.name, room.owner, room.updated, room.created
             ).insert(
-                owner, now, now
+                name, owner, now, now
             )
         return q
 
@@ -87,12 +108,11 @@ class SqlBuilder(object):
         join = Table(cfg.join)
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         if isinstance(member, list):
-            members = [(room, m, now) for m in member]
             q = Query.into(join).columns(
                 join.room, join.member, join.created
-            ).insert(
-                members
             )
+            for m in member:
+                q = q.insert(room, m, now)
         else:
             q = Query.into(join).columns(
                 join.room, join.member, join.created
@@ -104,14 +124,21 @@ class SqlBuilder(object):
     @sql_fmt
     def remove_member(room, member):
         join = Table(cfg.join)
-        now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        q = Query.into(join).columns(
-                join.room, join.member, join.created
-            ).insert(
-                room, member, now
-            )
+        q = Query.from_(join).delete().where(
+            (join.room == room) & (join.member == member)
+        )
         return q
 
+    @sql_fmt
+    def get_room(id):
+        room = Table(cfg.room)
+        q = Query.from_(room).select(
+            room.id, room.name, room.owner
+        ).where(
+            room.id == id
+        )
+        return q
+    
     @sql_fmt
     def update_room(id, name, owner):
         room = Table(cfg.room)
@@ -148,12 +175,65 @@ class SqlBuilder(object):
         return q
 
     @sql_fmt
+    def get_all_room(member):
+        join, room = Tables(cfg.join, cfg.room)
+        q = Query.from_(join).join(
+            room
+        ).on(
+            join.room == room.id
+        ).select(
+            join.room, room.name
+        ).where(
+            join.member == member
+        )
+        return q
+
+    @sql_fmt
     def get_all_roommate(room):
+        join, usr = Tables(cfg.join, cfg.usr)
         join = Table(cfg.join)
         q = Query.from_(join).select(
             join.member
         ).where(
             join.room == room
+        )
+        return q
+
+    @sql_fmt
+    def get_all_roommate_info(room):
+        join, usr = Tables(cfg.join, cfg.usr)
+        q = Query.from_(usr).join(
+            join
+        ).on(
+            join.member == usr.id
+        ).select(
+            usr.id, usr.name
+        ).where(
+            join.room == room
+        )
+        return q
+
+    @sql_fmt
+    def search(key):
+        room, usr = Tables(cfg.room, cfg.usr)
+        q = Query.from_(room).select(
+            room.id, room.name, fn.Concat(1).as_('type')
+        ).where(
+            room.name.like(key + '%')
+        ) + Query.from_(usr).select(
+            usr.id, usr.name, fn.Concat(0).as_('type')
+        ).where(
+            usr.name.like(key + '%')
+        )
+        return q
+
+    @sql_fmt
+    def searchUsr(key):
+        usr = Table(cfg.usr)
+        q = Query.from_(usr).select(
+            usr.id, usr.name
+        ).where(
+            usr.name == key
         )
         return q
 

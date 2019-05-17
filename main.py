@@ -17,7 +17,7 @@ from shutdown import sig_handler
 from route import urls
 
 settings = {
-    'static_path': os.path.join(os.path.dirname(__file__), 'static'),
+    'static_path': os.path.join(os.path.dirname(__file__), 'cache'),
     'debug': True,
 }
 

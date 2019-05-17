@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Author: Arius
 # @Email: arius@qq.com
-# @Date:   2019-01-23 17:46:37
+# @Date:   2019-01-23 16:10:52
 
 
 from util import Obj
 
 mysql = Obj({
     'host': '127.0.0.1',
-    'usr': 'root',
-    'pwd': 'root',
+    'usr': 'archbishop',
+    'pwd': 'ForAiur!1',
     'db': 'Khala',
 })
 

@@ -13,22 +13,21 @@ from auth.aes import (
     aiur_decode,
 )
 from auth import create_token
+from .model.usr import Usr
+
 
 class LoginHandler(BaseHandler):
 
     def _post(self):
-        arr = ('id', 'name')
-        usr = self.get_argument('user').strip()
+        usr = self.get_argument('usr').strip()
         pwd = sha1(self.get_argument('pwd').strip())
-        q = sql.login(usr, pwd, arr)
-        mc = MysqlClient.instance()
-        code, server = mc.do(q)
-        if code and server.rowcount() > 0:
-            r = dict(zip(arr, server.first()))
-            status, res = create_token(r)
+        usr_model = Usr()
+        usr_info = usr_model.login(usr, pwd)
+        if usr_info:
+            status, res = create_token(usr_info)
             if status:
                 return cfg.suc.code, {
-                    'account': r,
+                    'account': usr_info,
                     'token': res.decode('utf-8'),
                 }
             else:
@@ -43,13 +42,39 @@ class LoginHandler(BaseHandler):
 class RegisHandler(BaseHandler):
 
     def _post(self):
-        usr = self.get_argument('user').strip()
+        SELECT_COLUMN = ('id', 'name')
+        usr = self.get_argument('usr').strip()
         pwd = sha1(self.get_argument('pwd').strip())
-        q = sql.register(usr, pwd)
+        usr_model = Usr()
+        if usr_model.create(usr, pwd):
+            usr_info = usr_model.login(usr, pwd)
+            status, res = create_token(usr_info)
+            if status:
+                return cfg.suc.code, {
+                    'account': usr_info,
+                    'token': res.decode('utf-8'),
+                }
+            else:
+                return cfg.svr.code, {
+                    'err': str(res),
+                }
+        else:
+            return cfg.mis.code, {
+                'err': cfg.mis.text,
+            }
+
+class CheckHandler(BaseHandler):
+
+    def _post(self):
+        key = self.get_argument('key').strip()
+        q = sql.check_exist_by_name(key)
         mc = MysqlClient.instance()
-        print(q)
         code, server = mc.do(q)
-        print(code)
-        print(server)
-        print(server.rowcount)
-        print(server.first())
+        if code and server.first()[0]:
+            return cfg.mis.code, {
+                'err': 'key exist',
+            }
+        else:
+            return cfg.suc.code, {
+                'msg': 'ok',
+            }
